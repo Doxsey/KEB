@@ -33,7 +33,7 @@ void loop() {
 avgTemp = 0;
 
 var = 0;
-while(var < 50)  
+while(var < 40)  
   {
    avgTemp = avgTemp + float(Thermistor(analogRead(0)));
 
@@ -41,7 +41,7 @@ while(var < 50)
     delay(5);
   }
 
-avgTemp = avgTemp / 50;
+avgTemp = avgTemp / 40;
 
 Serial.print((char)27); // ESC
 Serial.print("[2J"); // clear screen
@@ -53,7 +53,7 @@ Serial.println(avgTemp);  // display Fahrenheit
 
  
  
-  if (avgTemp > 45.2)
+  if (avgTemp > 45.5)
     {
       resistorCase = 1; //Hotter than 45 degrees
     }
@@ -64,7 +64,7 @@ Serial.println(avgTemp);  // display Fahrenheit
     }
   else if (avgTemp < 44)
     {
-     resistorCase = 3; //Temp less than 44.4
+     resistorCase = 3; //Temp less than 44.5
     }
  
   else
@@ -81,13 +81,13 @@ Serial.println(resistorCase);
       digitalWrite(resitorPin, LOW); 
       digitalWrite(topFan, HIGH);
       Serial.println("Fan On, Resistor Off");
-      variableDelay = 1000; 
+      variableDelay = 500; 
       break;
     case 2:
       digitalWrite(resitorPin, LOW); 
       digitalWrite(topFan, LOW);
       Serial.println("Fan Off, Resistor Off");
-      variableDelay = 10000;
+      variableDelay = 5000;
       break;
     case 3:
       digitalWrite(resitorPin, HIGH); 
