@@ -3,6 +3,7 @@
 
 int resistorCase;
 int var;
+float avgTemp;
 
 double Thermistor(int RawADC) {
  double Temp;
@@ -25,33 +26,48 @@ void setup() {
 }
 
 void loop() {
+
+avgTemp = 0;
+
+var = 0;
+while(var < 20)  
+  {
+   avgTemp = avgTemp + float(Thermistor(analogRead(0)));
+
+    var++;
+    delay(5);
+  }
+
+avgTemp = avgTemp / 20;
+
 Serial.print((char)27); // ESC
 Serial.print("[2J"); // clear screen
 Serial.print((char)27); // ESC
 Serial.print("[H"); // cursor to home
-Serial.println(int(Thermistor(analogRead(0))));  // display Fahrenheit
+
+Serial.println(avgTemp);  // display Fahrenheit
 Serial.println(analogRead(0));
 
  
  
-  if (int(Thermistor(analogRead(0))) > 45)
+  if (avgTemp > 45.2)
     {
       resistorCase = 1; //Hotter than 45 degrees
     }
  
-  else if (int(Thermistor(analogRead(0))) == 45)
+  else if (avgTemp == 45)
     {
       resistorCase = 2; //Temp is 45
     }
-  else if (int(Thermistor(analogRead(0))) < 43)
+  else if (avgTemp < 44.4)
     {
-      resistorCase = 3; //Temp less than 43
+      resistorCase = 3; //Temp less than 44.4
     }
  
-  else
-    {
-      resistorCase = 4;
-    }
+  //else
+    //{
+      //resistorCase = 4;
+    //}
     
 Serial.print("Case: "); 
 Serial.println(resistorCase);
@@ -61,14 +77,17 @@ Serial.println(resistorCase);
     case 1:
       digitalWrite(resitorPin, LOW); 
       digitalWrite(topFan, HIGH);
+      Serial.println("Fan On, Resistor Off"); 
       break;
     case 2:
       digitalWrite(resitorPin, LOW); 
       digitalWrite(topFan, LOW);
+      Serial.println("Fan Off, Resistor Off");
       break;
     case 3:
       digitalWrite(resitorPin, HIGH); 
       digitalWrite(topFan, LOW);
+      Serial.println("Fan Off, Resistor On");
       break;
     case 4:
       digitalWrite(resitorPin, LOW); 
