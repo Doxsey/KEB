@@ -3,7 +3,9 @@
 
 int resistorCase;
 int var;
+int variableDelay;
 float avgTemp;
+
 
 double Thermistor(int RawADC) {
  double Temp;
@@ -23,6 +25,7 @@ void setup() {
  Serial.begin(115200);
  pinMode(6, OUTPUT);
  resistorCase = 0;
+ variableDelay = 1000;
 }
 
 void loop() {
@@ -30,7 +33,7 @@ void loop() {
 avgTemp = 0;
 
 var = 0;
-while(var < 20)  
+while(var < 50)  
   {
    avgTemp = avgTemp + float(Thermistor(analogRead(0)));
 
@@ -38,7 +41,7 @@ while(var < 20)
     delay(5);
   }
 
-avgTemp = avgTemp / 20;
+avgTemp = avgTemp / 50;
 
 Serial.print((char)27); // ESC
 Serial.print("[2J"); // clear screen
@@ -46,7 +49,7 @@ Serial.print((char)27); // ESC
 Serial.print("[H"); // cursor to home
 
 Serial.println(avgTemp);  // display Fahrenheit
-Serial.println(analogRead(0));
+//Serial.println(analogRead(0));
 
  
  
@@ -59,15 +62,15 @@ Serial.println(analogRead(0));
     {
       resistorCase = 2; //Temp is 45
     }
-  else if (avgTemp < 44.4)
+  else if (avgTemp < 44)
     {
-      resistorCase = 3; //Temp less than 44.4
+     resistorCase = 3; //Temp less than 44.4
     }
  
-  //else
-    //{
-      //resistorCase = 4;
-    //}
+  else
+    {
+      resistorCase = 4;
+    }
     
 Serial.print("Case: "); 
 Serial.println(resistorCase);
@@ -77,25 +80,30 @@ Serial.println(resistorCase);
     case 1:
       digitalWrite(resitorPin, LOW); 
       digitalWrite(topFan, HIGH);
-      Serial.println("Fan On, Resistor Off"); 
+      Serial.println("Fan On, Resistor Off");
+      variableDelay = 1000; 
       break;
     case 2:
       digitalWrite(resitorPin, LOW); 
       digitalWrite(topFan, LOW);
       Serial.println("Fan Off, Resistor Off");
+      variableDelay = 10000;
       break;
     case 3:
       digitalWrite(resitorPin, HIGH); 
       digitalWrite(topFan, LOW);
       Serial.println("Fan Off, Resistor On");
+      variableDelay = 1000;
       break;
     case 4:
       digitalWrite(resitorPin, LOW); 
       digitalWrite(topFan, LOW);
+      Serial.println("Fan Off, Resistor Off");
+      variableDelay = 5000;
       break;
       
   }
   
   
-delay(1000);
+delay(variableDelay);
 }
