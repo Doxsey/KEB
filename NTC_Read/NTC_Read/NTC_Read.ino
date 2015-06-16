@@ -126,7 +126,7 @@ void caseStatements()
 
 void Choose_Case()
   {
-    if (movingAvg > 45.5)
+    if (movingAvg > 45.7)
     {
       resistorCase = 1; //Hotter than 45 degrees
     }
@@ -135,7 +135,7 @@ void Choose_Case()
     {
       resistorCase = 2; //Temp is 45
     }
-  else if (movingAvg < 44)
+  else if (movingAvg < 44.5)
     {
      resistorCase = 3; //Temp less than 44.5
     }
