@@ -7,8 +7,8 @@ int variableDelay;
 float avgTemp;
 boolean toggle1 = 0;
 int sampleCount;
-float constantAvg;
-int constantCount;
+float storeAvg;
+unsigned int constantCount;
 float constantSum;
 float movingAvg;
 float movingSum;
@@ -37,7 +37,7 @@ void setup() {
  sampleCount=0;
  movingAvg = 0;
  movingSum = 1;
- constantAvg = 0;
+ //constantAvg = 0;
 constantCount = 0;
 constantSum = 0;
  avgTemp = 0;
@@ -73,8 +73,9 @@ void loop() {
 Display_Data();
 Choose_Case();
 caseStatements();  
- 
-delay(2000);
+
+
+delay(1000);
 }
 
 void Display_Data()
@@ -87,10 +88,10 @@ void Display_Data()
     Serial.println(movingAvg);  // display Celcius
     Serial.print("Case: "); 
     Serial.println(resistorCase);
-    Serial.print("Running Average: "); 
-    Serial.println(constantAvg);
-    Serial.print("Running Average Data Points: "); 
-    Serial.println(constantCount);
+//    Serial.print("Running Average: "); 
+//    Serial.println(constantAvg);
+//    Serial.print("Running Average Data Points: "); 
+//    Serial.println(constantCount);
   }
   
 void caseStatements()
@@ -125,16 +126,16 @@ void caseStatements()
 
 void Choose_Case()
   {
-    if (avgTemp > 45.5)
+    if (movingAvg > 45.5)
     {
       resistorCase = 1; //Hotter than 45 degrees
     }
  
-  else if (avgTemp == 45)
+  else if (movingAvg == 45)
     {
       resistorCase = 2; //Temp is 45
     }
-  else if (avgTemp < 44)
+  else if (movingAvg < 44)
     {
      resistorCase = 3; //Temp less than 44.5
     }
@@ -147,23 +148,34 @@ void Choose_Case()
 
 ISR(TIMER1_COMPA_vect)  //timer1 interrupt 1Hz toggles pin 13 (LED)
   {
-    
-    constantSum = constantSum + float(Thermistor(analogRead(0)));
-    constantCount++;
-    constantAvg = constantSum / constantCount;
-    
-  if (sampleCount < 5)
-    {
+    var = 0;
+    movingSum = 0;
+    movingAvg = 0;
+    while (var < 200)
+      {
       movingSum = movingSum + float(Thermistor(analogRead(0)));
-      sampleCount++;
-    }
-  else if (sampleCount == 5)
-    {
-      movingSum = movingSum + float(Thermistor(analogRead(0)));
-      movingAvg = movingSum / 5;
-      movingSum = 0; 
-      sampleCount = 1;  
-    }
+      movingAvg = movingSum / 200;
+      
+      var++; 
+      }
+    
+    
+//    constantSum = constantSum + float(Thermistor(analogRead(0)));
+//    constantCount++;
+//    constantAvg = constantSum / constantCount;
+    
+//  if (sampleCount < 5)
+//    {
+//      movingSum = movingSum + float(Thermistor(analogRead(0)));
+//      sampleCount++;
+//    }
+//  else if (sampleCount == 5)
+//    {
+//      movingSum = movingSum + float(Thermistor(analogRead(0)));
+//      movingAvg = movingSum / 5;
+//      movingSum = 0; 
+//      sampleCount = 1;  
+//    }
   
   }
 
